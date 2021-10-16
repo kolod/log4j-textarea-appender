@@ -1,3 +1,5 @@
+// Licensed under the MIT license. See LICENSE file in the project root for details.
+
 plugins {
     id 'java-library'
     id 'maven-publish'
@@ -7,6 +9,7 @@ plugins {
 description = 'The Log4J Appender for the JTextArea'
 archivesBaseName = 'log4j-textarea-appender'
 group = 'io.github.kolod'
+version = '1.0'
 
 repositories {
     mavenCentral()
@@ -33,6 +36,58 @@ artifacts {
     archives javadocJar, sourcesJar
 }
 
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+publishing {
+    repositories {
+        maven {
+            def releasesRepoUrl = 'https://s01.oss.sonatype.org/content/repositories/releases/'
+            def snapshotsRepoUrl = 'https://s01.oss.sonatype.org/content/repositories/snapshots/'
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+            credentials(PasswordCredentials) {
+                username ossrhUsername
+                password ossrhPassword
+            }
+        }
+    }
+    publications {
+        mavenJava(MavenPublication) {
+            pom {
+                name = 'log4j-textarea-appender'
+                description = 'The Log4J Appender for the JTextArea.'
+                url = 'https://github.com/kolod/log4j-textarea-appender'                
+                licenses {
+                    license {
+                        name = 'The MIT License'
+                        url = 'https://raw.githubusercontent.com/kolod/log4j-textarea-appender/main/LICENSE'
+                    }
+                }                
+                developers {
+                    developer {
+                        id = 'Kolod'
+                        name = 'Oleksandr Kolodkin'
+                        email = 'alexandr.kolodkin@gmail.com'
+                    }
+                }                
+                scm {
+                    connection = 'scm:git:https://github.com/kolod/log4j-textarea-appender.git'
+                    developerConnection = 'scm:git:ssh:git@github.com:kolod/log4j-textarea-appender.git'
+                    url = 'https://github.com/kolod/log4j-textarea-appender'
+                }
+            }            
+            
+            groupId = 'io.github.kolod'
+            artifactId = 'log4j-textarea-appender'
+            version = '1.0'
+            
+            from components.java
+        }
+    }
+}
+
 signing {
-    sign configurations.archives
+    sign publishing.publications.mavenJava
 }
