@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (C) 2022-... Oleksandr Kolodkin <alexandr.kolodkin@gmail.com>
+  Licensed under the MIT license. See LICENSE file in the project root for details.
+-->
+<Configuration>
+	<Appenders>
+		<Console name="Console">
+			<PatternLayout pattern="%d{DEFAULT} [%t] %-5level %logger{36} - %msg%n" charset="UTF-8"/>
+		</Console>
+		<TextAreaAppender name="TextArea" maxLines="100" ignoreExceptions="false">
+			<ThresholdFilter level="TRACE" onMatch="ACCEPT" onMismatch="DENY"/>
+			<PatternLayout pattern="%d{DEFAULT} | %msg%n" charset="UTF-8"/>
+		</TextAreaAppender>
+		<RollingFile name="RollingFile" fileName="logs/test_trainer.log" filePattern="logs/$${date:yyyy-MM}/test_trainer-%d{MM-dd-yyyy}-%i.log.zip">
+			<PatternLayout pattern="%d{DEFAULT} [%t] %-5level %logger{36} - %msg%n" charset="UTF-8"/>
+			<Policies>
+				<OnStartupTriggeringPolicy />
+				<TimeBasedTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="250 MB"/>
+			</Policies>
+			<DefaultRolloverStrategy max="20"/>
+		</RollingFile>
+	</Appenders>
+	<Loggers>
+		<Root level="TRACE">
+			<AppenderRef ref="Console"/>
+			<AppenderRef ref="TextArea"/>
+			<AppenderRef ref="RollingFile"/>
+		</Root>
+	</Loggers>
+</Configuration>
